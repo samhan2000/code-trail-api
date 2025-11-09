@@ -1,0 +1,120 @@
+// ---------------------------------------------
+// Prisma Schema for Personal Learning Tracker
+// Database: PostgreSQL
+// ---------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------
+// User model - each learner has their own data
+// ---------------------------------------------
+model User {
+  id                  String   @id @default(uuid())
+  name                String
+  username            String   @unique
+  email               String   @unique
+  avatarUrl           String?  @map("avatar_url")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  tokenVersion        String?
+  refreshTokenVersion String?
+
+  // Relations
+  stacks  Stack[]
+  modules Module[]
+  lessons Lesson[]
+
+  @@map("user")
+}
+
+// ---------------------------------------------
+// Stack model - top-level category (per user)
+// ---------------------------------------------
+model Stack {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  slug        String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Foreign key
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relations
+  modules Module[]
+
+  @@unique([userId, slug])
+  @@map("stack")
+}
+
+// ---------------------------------------------
+// Module model - belongs to a Stack & User
+// ---------------------------------------------
+model Module {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  slug        String
+  orderIndex  Int?     @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Foreign keys
+  userId  String @map("user_id")
+  stackId String @map("stack_id")
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stack   Stack  @relation(fields: [stackId], references: [id], onDelete: Cascade)
+
+  // Relations
+  lessons Lesson[]
+
+  @@unique([userId, slug])
+  @@map("module")
+}
+
+// ---------------------------------------------
+// Lesson model - belongs to a Module & User
+// ---------------------------------------------
+model Lesson {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  slug        String
+  notes       String?
+  code        String?
+  progress    Int?      @default(0)
+  orderIndex  Int?      @map("order_index")
+  lastVisited DateTime? @map("last_visited")
+  completed   Boolean   @default(false)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Foreign keys
+  userId   String @map("user_id")
+  moduleId String @map("module_id")
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, slug])
+  @@map("lesson")
+}
+
+model AuthUser {
+  id       Int      @id @default(autoincrement())
+  name     String
+  username String   @unique
+  email    String   @unique
+  password String
+  isActive Boolean? @default(true)
+
+  @@map("auth_user")
+}
