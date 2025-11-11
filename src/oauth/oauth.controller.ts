@@ -26,15 +26,21 @@ export class OauthController {
     @Post('login')
     async login(@Body() body: any, @Res() res: Response) {
         console.log(body, "BODY")
-        const { redirect_uri, state, username, password } = body;
+        const { redirect_uri, state, username, password, client_id } = body;
+
+        console.log("Redirect URI", redirect_uri, state, username, password)
         const code = username;
 
         try {
             const valid = await this.oauthService.validateLogin(username, password)
-            if (!valid) return res.status(401).json({ error: "Invalid credentials" });
+            if (!valid) return res.redirect(
+                `${process.env.FRONTENDURL}/auth/login?error=Invalid%20username%20or%20password&client_id=${client_id}&redirect_uri=${redirect_uri}&state=${state}`
+            );
         } catch (err) {
             console.log("In Login", err)
-            return res.status(401).json({ error: "Invalid credentials" });
+            return res.redirect(
+                `${process.env.FRONTENDURL}/auth/login?error=Invalid%20username%20or%20password&client_id=${client_id}&redirect_uri=${redirect_uri}&state=${state}`
+            );
         }
 
         const redirectUrl = new url.URL(redirect_uri);

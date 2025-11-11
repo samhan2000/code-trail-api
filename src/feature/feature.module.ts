@@ -8,10 +8,13 @@ import { ModulesService } from './modules/modules.service';
 import { LessonsService } from './lessons/lessons.service';
 import { CommonFeatureService } from './common-feature.service';
 import { CommonFeatureController } from './common-feature.controller';
+import { SearchController } from './search/search.controller';
+import { SearchService } from './search/search.service';
+import { OauthModule } from 'src/oauth/oauth.module';
 
 @Module({
-  imports: [PrismaModule],
-  controllers: [StacksController, ModulesController, LessonsController, CommonFeatureController],
-  providers: [StacksService, ModulesService, LessonsService, CommonFeatureService]
+  imports: [PrismaModule, OauthModule],
+  controllers: [StacksController, ModulesController, LessonsController, CommonFeatureController, SearchController],
+  providers: [StacksService, ModulesService, LessonsService, CommonFeatureService, SearchService]
 })
 export class FeatureModule { }

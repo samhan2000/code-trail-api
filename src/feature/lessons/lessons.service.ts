@@ -77,12 +77,33 @@ export class LessonsService {
     }
 
     async getLessonBySlug(req: any) {
-        return await this.prisma.lesson.findFirst({
+        await this.prisma.lesson.update({
             where: {
-                slug: req.lessonSlug,
-                userId: req.userId
+                userId_slug: {
+                    slug: req.lessonSlug,
+                    userId: req.userId
+                }
+            },
+            data: {
+                lastVisited: new Date()
             }
         })
+
+        return await this.prisma.lesson.findFirst({
+            where: { userId: req.userId, slug: req.lessonSlug, },
+            include: {
+                module: {
+                    select: {
+                        slug: true,
+                        name: true,
+                    },
+                },
+            },
+            orderBy: {
+                lastVisited: "desc",
+            },
+        });
+
     }
 
     async saveLesson(req: any) {
