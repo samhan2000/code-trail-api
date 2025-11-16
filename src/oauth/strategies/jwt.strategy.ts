@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             algorithms: ['RS256'],
             secretOrKey: publicKey,
             audience: 'codetrail-client-id',
-            issuer: `/oauth`,
+            issuer: `${process.env.PUBLIC_PROVIDER_URL}/oauth`,
         });
     }
 
