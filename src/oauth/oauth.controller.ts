@@ -97,8 +97,8 @@ export class OauthController {
         console.log(req.body, "Request in OAuth")
         res.json({
             // "issuer": "/oauth",
-            "issuer": `${process.env.INTERNAL_PROVIDER_URL}/oauth`,
-            "authorization_endpoint": `${process.env.INTERNAL_PROVIDER_URL}/oauth/authorize`,
+            "issuer": `${process.env.PUBLIC_PROVIDER_URL}/oauth`,
+            "authorization_endpoint": `${process.env.PUBLIC_PROVIDER_URL}/oauth/authorize`,
             "token_endpoint": `${process.env.INTERNAL_PROVIDER_URL}/oauth/token`,
             "userinfo_endpoint": `${process.env.INTERNAL_PROVIDER_URL}/oauth/userinfo`,
             "jwks_uri": `${process.env.INTERNAL_PROVIDER_URL}/oauth/.well-known/jwks.json`,
