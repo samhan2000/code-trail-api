@@ -96,7 +96,8 @@ export class OauthController {
     openid(@Req() req: Request, @Res() res: Response) {
         console.log(req.body, "Request in OAuth")
         res.json({
-            "issuer": "/oauth",
+            // "issuer": "/oauth",
+            "issuer": `${process.env.INTERNAL_PROVIDER_URL}/oauth`,
             "authorization_endpoint": `${process.env.INTERNAL_PROVIDER_URL}/oauth/authorize`,
             "token_endpoint": `${process.env.INTERNAL_PROVIDER_URL}/oauth/token`,
             "userinfo_endpoint": `${process.env.INTERNAL_PROVIDER_URL}/oauth/userinfo`,
