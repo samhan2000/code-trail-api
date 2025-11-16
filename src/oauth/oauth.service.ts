@@ -40,7 +40,7 @@ export class OauthService {
             id: userDetails.id,
             username: userDetails.username,
             email: userDetails.email,
-            iss: "/oauth",
+            iss: `${process.env.PUBLIC_PROVIDER_URL}/oauth`,
             aud: "codetrail-client-id",
             iat: now,
             scope: "openid profile email",
@@ -51,7 +51,7 @@ export class OauthService {
         const payload = {
             sub: userDetails.id,
             aud: "codetrail-client-id",
-            iss: "/oauth",
+            iss: `${process.env.PUBLIC_PROVIDER_URL}/oauth`,
             iat: now,
             // exp: now + 3600,
             username: userDetails.username,
